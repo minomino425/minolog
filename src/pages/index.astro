@@ -1,9 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getBlogs } from "../libs/microcms";
+import type { GetStaticPathsOptions } from "astro";
 
 //MicroCMSの呼び出し
 const response = await getBlogs({ fields: ["id", "title"] });
+
+export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
+  const cats = await getBlogs({ limit: 1000 });
+  return paginate(cats.contents, { pageSize: 3 });
+};
 ---
 
 <Layout title="Astro Blog">
@@ -18,6 +24,9 @@ const response = await getBlogs({ fields: ["id", "title"] });
         ))
       }
     </ul>
+    <nav>
+      {/* page.currentPageで現在ページ、page.lastPageで総ページ数を表示 */}
+    </nav>
   </main>
 </Layout>
 
