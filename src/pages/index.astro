@@ -4,12 +4,15 @@ import { getBlogs } from "../libs/microcms";
 import type { GetStaticPathsOptions } from "astro";
 
 //MicroCMSの呼び出し
-const response = await getBlogs({ fields: ["id", "title"] });
+const response = await getBlogs({});
 
-export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
-  const cats = await getBlogs({ limit: 1000 });
-  return paginate(cats.contents, { pageSize: 3 });
-};
+//pagination
+const perPage = 2;
+const totalPage = Math.ceil(response.totalCount / perPage);
+const paths = Array.from({ length: totalPage }).map((_, i) => ({
+  params: { page: String(i + 1) },
+}));
+console.log(paths)
 ---
 
 <Layout title="Astro Blog">
@@ -18,15 +21,28 @@ export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
     <ul>
       {
         response.contents.map((blog: any) => (
-          <li>
-            <a href={blog.id}>{blog.title}</a>
+          <li class="pageList">
+            <a class="pageList__link" href={blog.id}>
+              {blog.title}
+            </a>
           </li>
         ))
       }
     </ul>
-    <nav>
-      {/* page.currentPageで現在ページ、page.lastPageで総ページ数を表示 */}
-    </nav>
+    <!--現在のページから次のページへのリンク -->
+    <a href={String(Number(paths[0].params.page) + 1)}>次のページ</a>
+    
+    <!--ページネーション-->
+    <div>
+      <ul>
+        {
+          paths.map((path) => (
+            <li>
+              <a href={path.params.page}>{path.params.page}</a>
+            </li>
+          ))
+        }
+      </ul>
   </main>
 </Layout>
 
@@ -65,7 +81,7 @@ export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
     margin-bottom: 10px;
   }
 
-  a {
+  .pageList__link {
     color: #6884bd;
     text-decoration: none;
     font-weight: 600;
