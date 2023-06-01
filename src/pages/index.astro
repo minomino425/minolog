@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getBlogs } from "../libs/microcms";
+import Pagination from "../components/Pagination.astro";
 import type { GetStaticPathsOptions } from "astro";
 
 //MicroCMSの呼び出し
@@ -12,7 +13,6 @@ const totalPage = Math.ceil(response.totalCount / perPage);
 const paths = Array.from({ length: totalPage }).map((_, i) => ({
   params: { page: String(i + 1) },
 }));
-console.log(paths)
 ---
 
 <Layout title="Astro Blog">
@@ -30,19 +30,25 @@ console.log(paths)
       }
     </ul>
     <!--現在のページから次のページへのリンク -->
-    <a href={String(Number(paths[0].params.page) + 1)}>次のページ</a>
-    
+
     <!--ページネーション-->
-    <div>
-      <ul>
-        {
-          paths.map((path) => (
-            <li>
-              <a href={path.params.page}>{path.params.page}</a>
-            </li>
-          ))
-        }
-      </ul>
+    <ul class="contentsList">
+      {
+        paths.map((path) => (
+          <li>
+            <a class="contentsLink" href={path.params.page}>{path.params.page}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <ul>
+      <li>
+        <a href={paths[1].params.page}>次へ →</a>
+      </li>
+    </ul>
+
+    <!-- <Pagination prev={prev} next={next} /> -->
   </main>
 </Layout>
 
@@ -90,5 +96,13 @@ console.log(paths)
   a:hover {
     color: #25603a;
     text-decoration: underline;
+  }
+  .contentsList{
+    display: flex;
+    gap: 5px;
+  }
+
+  .contentsLink{
+    color: #c88e8e;
   }
 </style>
