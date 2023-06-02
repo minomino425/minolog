@@ -42,11 +42,11 @@ const paths = Array.from({ length: totalPage }).map((_, i) => ({
       }
     </ul>
 
-    <ul>
+    <ul class="contentsList">
       {
         paths.map((path) => (
           <li>
-            <a href={path.params.page}>{path.params.page}</a>
+            <a class="contentsLink" href={path.params.page === "1" ? "/" : path.params.page}>{path.params.page}</a>
           </li>
         ))
       }
@@ -92,7 +92,7 @@ const paths = Array.from({ length: totalPage }).map((_, i) => ({
     margin-bottom: 10px;
   }
 
-  a {
+  .pageList__link {
     color: #6884bd;
     text-decoration: none;
     font-weight: 600;
@@ -101,5 +101,13 @@ const paths = Array.from({ length: totalPage }).map((_, i) => ({
   a:hover {
     color: #25603a;
     text-decoration: underline;
+  }
+  .contentsList{
+    display: flex;
+    gap: 5px;
+  }
+
+  .contentsLink{
+    color: #c88e8e;
   }
 </style>

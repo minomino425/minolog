@@ -4,12 +4,14 @@ import { getBlogs } from "../libs/microcms";
 import Pagination from "../components/Pagination.astro";
 import type { GetStaticPathsOptions } from "astro";
 
+//何件表示するか
+const num = 3;
+
 //MicroCMSの呼び出し
-const response = await getBlogs({});
+const response = await getBlogs({ limit: num });
 
 //pagination
-const perPage = 2;
-const totalPage = Math.ceil(response.totalCount / perPage);
+const totalPage = Math.ceil(response.totalCount / num);
 const paths = Array.from({ length: totalPage }).map((_, i) => ({
   params: { page: String(i + 1) },
 }));
