@@ -1,56 +1,31 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getBlogs } from "../libs/microcms";
-import Pagination from "../components/Pagination.astro";
-import type { GetStaticPathsOptions } from "astro";
-
-//何件表示するか
-const num = 3;
 
 //MicroCMSの呼び出し
-const response = await getBlogs({ limit: num });
+// const response = await getBlogs({ limit: num });
 
-//pagination
-const totalPage = Math.ceil(response.totalCount / num);
-const paths = Array.from({ length: totalPage }).map((_, i) => ({
-  params: { page: String(i + 1) },
-}));
+const response = await fetch(
+  "https://sheets.googleapis.com/v4/spreadsheets/1VDZZj69d7mEFWxeY476MaJnu2CRXeSRqWxTQA4_tVWo/values/価格?key=AIzaSyAITZKDxkfN8kpsZFCuH7_2F4xkQoK5HBY"
+);
+const data = await response.json();
+const valuesArray = data.values.slice(1);
 ---
 
 <Layout title="Astro Blog">
   <main>
     <h1>Minolog</h1>
-    <ul>
+    <ul class="list-wrap">
       {
-        response.contents.map((blog: any) => (
-          <li class="pageList">
-            <a class="pageList__link" href={blog.id}>
-              {blog.title}
-            </a>
+        //mapで配列を展開、0番目はタイトルなので1番目から
+        valuesArray.map((value: any) => (
+          <li class="list">
+            <p>{value[1]}</p>
+            <p>{value[2]}</p>
+            <p>{value[3]}</p>
           </li>
         ))
       }
     </ul>
-    <!--現在のページから次のページへのリンク -->
-
-    <!--ページネーション-->
-    <ul class="contentsList">
-      {
-        paths.map((path) => (
-          <li>
-            <a class="contentsLink" href={path.params.page}>{path.params.page}</a>
-          </li>
-        ))
-      }
-    </ul>
-
-    <ul>
-      <li>
-        <a href={paths[1].params.page}>次へ →</a>
-      </li>
-    </ul>
-
-    <!-- <Pagination prev={prev} next={next} /> -->
   </main>
 </Layout>
 
@@ -81,12 +56,12 @@ const paths = Array.from({ length: totalPage }).map((_, i) => ({
   }
 
   ul {
-    padding: 0;
-    list-style-type: none;
+    display: flex;
   }
 
   li {
     margin-bottom: 10px;
+    list-style: none;
   }
 
   .pageList__link {
@@ -99,12 +74,13 @@ const paths = Array.from({ length: totalPage }).map((_, i) => ({
     color: #25603a;
     text-decoration: underline;
   }
-  .contentsList{
+
+  .contentsList {
     display: flex;
     gap: 5px;
   }
 
-  .contentsLink{
+  .contentsLink {
     color: #c88e8e;
   }
 </style>
