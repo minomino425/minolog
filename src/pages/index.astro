@@ -4,8 +4,9 @@ import Layout from "../layouts/Layout.astro";
 //MicroCMSの呼び出し
 // const response = await getBlogs({ limit: num });
 
+const apiKey = import.meta.env.API_KEY_D;
 const response = await fetch(
-  "https://sheets.googleapis.com/v4/spreadsheets/1VDZZj69d7mEFWxeY476MaJnu2CRXeSRqWxTQA4_tVWo/values/価格?key=AIzaSyAITZKDxkfN8kpsZFCuH7_2F4xkQoK5HBY"
+`https://sheets.googleapis.com/v4/spreadsheets/1VDZZj69d7mEFWxeY476MaJnu2CRXeSRqWxTQA4_tVWo/values/価格?key=${apiKey}`
 );
 const data = await response.json();
 const valuesArray = data.values.slice(1);
@@ -16,7 +17,7 @@ const valuesArray = data.values.slice(1);
     <h1>Minolog</h1>
     <ul class="list-wrap">
       {
-        //mapで配列を展開、0番目はタイトルなので1番目から
+        //mapで配列を展開、0番目はNo.なので1番目から
         valuesArray.map((value: any) => (
           <li class="list">
             <p>{value[1]}</p>
